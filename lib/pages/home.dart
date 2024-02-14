@@ -1,21 +1,12 @@
 import 'dart:developer';
 
-import 'package:teleconsultorio/models/consulta.dart';
-import 'package:teleconsultorio/models/estudio.dart';
-import 'package:teleconsultorio/models/institucion.dart';
-import 'package:teleconsultorio/models/servicio.dart';
-import 'package:teleconsultorio/models/session_manager.dart';
-import 'package:teleconsultorio/models/sintoma.dart';
-import 'package:teleconsultorio/models/usuario.dart';
-import 'package:teleconsultorio/pages/estudios.dart';
-import 'package:teleconsultorio/pages/historial.dart';
-import 'package:teleconsultorio/pages/nueva_consulta.dart';
-import 'package:teleconsultorio/pages/recetas.dart';
-import 'package:teleconsultorio/pages/teleconsulta.dart';
-import 'package:teleconsultorio/services/auth_service.dart';
+import 'package:ocupacional/models/inasistencia.dart';
+import 'package:ocupacional/models/institucion.dart';
+import 'package:ocupacional/models/session_manager.dart';
+import 'package:ocupacional/models/usuario.dart';
+import 'package:ocupacional/services/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:teleconsultorio/services/consulta_service.dart';
-import 'package:teleconsultorio/services/notification_service.dart';
+import 'package:ocupacional/services/inasistencia_service.dart';
 
 
 import 'login.dart';
@@ -38,25 +29,6 @@ class _HomeState extends State<Home> {
   void initState(){
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) => _check());
-    NotificationService.messagesStream.listen((message) {
-      var valueMap = message.split(",");
-      switch(valueMap[2]){
-        case 'open':
-        //log('message');
-        //WidgetsBinding.instance!.addPostFrameCallback((_) => _showMyDialog('mensaje en home'));
-          _DialogFirebase('Una Teleconsulta se acaba de iniciar. El sistema se redireccionará al inicio.');
-          break;
-        case 'back':
-
-          break;
-        case 'finality':
-
-          break;
-        default:
-
-          break;
-      }
-    });
   }
 
   void _check() async{
