@@ -1,5 +1,3 @@
-import 'package:teleconsultorio/models/servicio.dart';
-import 'package:teleconsultorio/models/sintoma.dart';
 
 class Institucion{
   int _id;
@@ -16,6 +14,10 @@ class Institucion{
 
   bool get publico => _publico;
   set publico(bool publico) => _publico = publico;
+
+  factory Institucion.fromJson(Map<String, dynamic> json){
+    return Institucion(json['id'], json['nombre'], json['publico']);
+  }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();

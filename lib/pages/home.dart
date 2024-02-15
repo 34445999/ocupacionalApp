@@ -23,7 +23,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   late Usuario objectUser;
-  List<Consulta> consultas = [];
+  List<Inasistencia> consultas = [];
 
   @override
   void initState(){
@@ -40,33 +40,19 @@ class _HomeState extends State<Home> {
       var jsonUser = data['usuario'];
       var jsonUserInstitucion = jsonUser['users_instituciones'];
       var jsonPaciente = jsonUser['paciente'];
-      var jsonEstudios = jsonPaciente['estudios'];
-      var jsonConsultas = data['consultas'];
-      var jsonSintomas = data['sintomas'];
+      var jsonInasistencias = data['inasistencias'];
 
       List<Institucion> instituciones = [];
       jsonUserInstitucion.forEach((data){
-        Institucion objectInstitucion = Institucion.fromJson(data['institucion'],jsonSintomas);
+        Institucion objectInstitucion = Institucion.fromJson(data['institucion']);
         instituciones.add(objectInstitucion);
       });
 
-      List<Estudio> estudios = [];
-      jsonEstudios.forEach((data){
-        Estudio objectEstudio = Estudio.fromJson(data);
-        estudios.add(objectEstudio);
-      });
+      objectUser = Usuario(jsonUser['id'], jsonUser['name'], jsonUser['apellido'], jsonUser['email'], jsonUser['role_id'], instituciones);
 
-      objectUser = Usuario(jsonUser['id'], jsonUser['name'], jsonUser['apellido'], jsonUser['email'], jsonUser['role_id'], instituciones, estudios);
-
-      jsonConsultas.forEach((data){
-        List<Sintoma> sintomas = [];
-        data['sintomas'].forEach((sin){
-          Sintoma objectSintoma = Sintoma.fromJson(sin);
-          sintomas.add(objectSintoma);
-        });
+      jsonInasistencias.forEach((data){
         Institucion objectInstitucion = instituciones.singleWhere((i) => (i.id == data['institucion_id']));
-        Servicio objectServicio = objectInstitucion.servicios.singleWhere((s) => (s.id == data['tipo_consulta_id']));
-        Consulta objectConsulta = Consulta(data['id'], data['sesion'], data['token_pac'], data['estado'], data['consentimiento'], data['fecha_turno'], data['comentario_pac'], sintomas, objectServicio, objectInstitucion);
+        Inasistencia objectInasistencia = Inasistencia(data['id'], data['sesion'], data['token_pac'], data['estado'], data['consentimiento'], data['fecha_turno'], data['comentario_pac'], sintomas, objectServicio, objectInstitucion);
         setState(() {
           consultas.add(objectConsulta);
         });

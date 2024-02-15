@@ -8,20 +8,17 @@ import 'package:http/http.dart' as http;
 
 class InasistenciaService{
 
-  Future<dynamic> createConsulta(List<Sintoma> sintomas, int institucion_id, String comentario, List<Estudio> estudios, int servicio_id) async {
+  Future<dynamic> create(int institucion_id, String fecha, String ubicacion, String archivo) async {
     final Map<String, dynamic> errorJson = new Map<String, dynamic>();
 
     try {
       var url = Uri.parse('https://simed.med.unne.edu.ar/api/v2/consulta/store');
       String token = await SessionManager.getToken();
-      String jsonSintomas = jsonEncode(sintomas);
-      String jsonEstudios = jsonEncode(estudios);
       var response = await http.post(url, headers: {HttpHeaders.authorizationHeader: 'Bearer '+ token,}, body: {
-        'sintomas' : jsonSintomas,
-        'comentario' : comentario,
+        'fecha' : fecha,
+        'ubicacion' : ubicacion,
         'institucion_id' : institucion_id.toString(),
-        'servicio_id' : servicio_id.toString(),
-        'estudios' : jsonEstudios
+        'archivo' : archivo
       });
       switch (response.statusCode) {
         case 200:
@@ -54,14 +51,14 @@ class InasistenciaService{
     }
   }
 
-  Future<dynamic> cancelConsulta(int consulta_id) async {
+  Future<dynamic> cancel(int inasistencia_id) async {
     final Map<String, dynamic> errorJson = new Map<String, dynamic>();
 
     try {
       var url = Uri.parse('https://simed.med.unne.edu.ar/api/consulta/cancel');
       String token = await SessionManager.getToken();
       var response = await http.post(url, headers: {HttpHeaders.authorizationHeader: 'Bearer '+ token,}, body: {
-        'id' : consulta_id.toString()
+        'id' : inasistencia_id.toString()
       });
       switch (response.statusCode) {
         case 200:
@@ -95,14 +92,14 @@ class InasistenciaService{
     }
   }
 
-  Future<dynamic> credentialsConsulta(int consulta_id) async {
+  Future<dynamic> show(int inasistencia_id) async {
     final Map<String, dynamic> errorJson = new Map<String, dynamic>();
 
     try {
       var url = Uri.parse('https://simed.med.unne.edu.ar/api/conectar');
       String token = await SessionManager.getToken();
       var response = await http.post(url, headers: {HttpHeaders.authorizationHeader: 'Bearer '+ token,}, body: {
-        'consulta_id' : consulta_id.toString()
+        'consulta_id' : inasistencia_id.toString()
       });
       switch (response.statusCode) {
         case 200:
@@ -131,7 +128,7 @@ class InasistenciaService{
     }
   }
 
-  Future<dynamic> listConsulta() async {
+  Future<dynamic> list() async {
     final Map<String, dynamic> errorJson = new Map<String, dynamic>();
 
     try {
