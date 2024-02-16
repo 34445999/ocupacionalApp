@@ -10,6 +10,7 @@ import 'package:ocupacional/services/inasistencia_service.dart';
 
 
 import 'login.dart';
+import 'nueva_inasistencia.dart';
 
 class Home extends StatefulWidget {
   static String id = 'home';
@@ -52,9 +53,9 @@ class _HomeState extends State<Home> {
 
       jsonInasistencias.forEach((data){
         Institucion objectInstitucion = instituciones.singleWhere((i) => (i.id == data['institucion_id']));
-        Inasistencia objectInasistencia = Inasistencia(data['id'], data['sesion'], data['token_pac'], data['estado'], data['consentimiento'], data['fecha_turno'], data['comentario_pac'], sintomas, objectServicio, objectInstitucion);
+        Inasistencia objectInasistencia = Inasistencia(data['id'], data['fecha'], data['ubicacion'], data['archivo'], data['estado'], objectInstitucion);
         setState(() {
-          consultas.add(objectConsulta);
+          consultas.add(objectInasistencia);
         });
       });
     }else{
@@ -92,8 +93,8 @@ class _HomeState extends State<Home> {
                       //click en cada elemento
                     },
                     title: Text(consultas[index].institucion.nombre),
-                    subtitle: Text('Servicio: '+ consultas[index].servicio.descripcion+'\n'+
-                        consultas[index].allSintomas()+'\n'+
+                    subtitle: Text('Servicio: '+ 'var1'+'\n'+
+                        'var2'+'\n'+
                         'Estado: '+consultas[index].estado
                     ),
                   ),
@@ -114,10 +115,12 @@ class _HomeState extends State<Home> {
                           onPressed: () {
                             if(consultas[index].estado == "Disponible"){
                               log("unirse a la video ${consultas[index].id}");
+                              /*
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(builder: (context) => Teleconsulta(id : consultas[index].id))
                               );
+                              */
                             }
                           }
                       ),
@@ -142,31 +145,7 @@ class _HomeState extends State<Home> {
                 icon: const Icon(Icons.add_box_rounded),
                 color: Colors.purple,
                 onPressed: () {
-                  _navigateNuevaConsulta();
-                }
-            ),
-            IconButton(
-                iconSize: 40.0,
-                icon: const Icon(Icons.list),
-                color: Colors.purple,
-                onPressed: () {
-                  _navigateHistorial();
-                }
-            ),
-            IconButton(
-                iconSize: 40.0,
-                icon: const Icon(Icons.folder),
-                color: Colors.purple,
-                onPressed: () {
-                  _navigateEstudio();
-                }
-            ),
-            IconButton(
-                iconSize: 40.0,
-                icon: const Icon(Icons.insert_drive_file_outlined),
-                color: Colors.purple,
-                onPressed: () {
-                  _navigateReceta();
+                  _navigateNuevaInasistencia();
                 }
             ),
           ],
@@ -194,81 +173,15 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Future<void> _DialogFirebase(String message) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Atención'),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context, 'Cancel');
-                Navigator.pushNamedAndRemoveUntil(
-                    context, Home.id, ModalRoute.withName(Home.id));
-              },
-              child: const Text('Aceptar'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _navigateNuevaConsulta() async {
+  void _navigateNuevaInasistencia() async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => NuevaConsulta(user : objectUser)),
+      MaterialPageRoute(builder: (context) => NuevaInasistencia(user : objectUser)),
     );
     if(result != null) {
       if (result == 'true') {
         _check();
       }else{
-        Navigator.pushNamedAndRemoveUntil(
-            context, Login.id, ModalRoute.withName(Login.id));
-      }
-    }
-  }
-
-  void _navigateHistorial() async{
-    //Navigator.push(context, MaterialPageRoute(builder: (context) => Historial()));
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => Historial()),
-    );
-    if(result != null) {
-      if (result == 'false') {
-        Navigator.pushNamedAndRemoveUntil(
-            context, Login.id, ModalRoute.withName(Login.id));
-      }
-    }
-  }
-
-  void _navigateEstudio() async{
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => Estudios(objectEstudios : objectUser.estudios)),
-    );
-
-    if(result != null) {
-      if (result == 'false') {
-        Navigator.pushNamedAndRemoveUntil(
-            context, Login.id, ModalRoute.withName(Login.id));
-      }
-    }else{
-      _check();
-    }
-  }
-
-  void _navigateReceta() async{
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => Recetas()),
-    );
-    if(result != null) {
-      if (result == 'false') {
         Navigator.pushNamedAndRemoveUntil(
             context, Login.id, ModalRoute.withName(Login.id));
       }
@@ -291,7 +204,7 @@ class _HomeState extends State<Home> {
             TextButton(
               onPressed: (){
                 Navigator.pop(context);
-                _cancelQuery(id);
+                _cancelInasistencia(id);
               },
               child: const Text('Confirmar'),
             ),
@@ -301,9 +214,9 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Future<void> _cancelQuery(int id) async {
-    ConsultaService consultaService = ConsultaService();
-    var data = await consultaService.cancelConsulta(id);
+  Future<void> _cancelInasistencia(int id) async {
+    InasistenciaService inasistenciaService = InasistenciaService();
+    var data = await inasistenciaService.cancel(id);
     if(data['status'] == true) {
       _check();
     }else{
