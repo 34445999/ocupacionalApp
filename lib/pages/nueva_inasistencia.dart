@@ -27,7 +27,7 @@ class NuevaInasistencia extends StatefulWidget {
 
 class _NuevaInasistenciaState extends State<NuevaInasistencia> {
   final _formKeyNewQuery = GlobalKey<FormState>();
-  final List<Item> _data = [Item(index: 0,header: 'Síntomas', description: 'La selección de uno o mas síntomas es opcional.'),Item(index: 1,header: 'Servicios', description: 'Seleccioné uno de los servicios de salud ofrecidos por la institución.'),Item(index: 2,header: 'Estudios y/o exámenes médicos', description: 'La selección es opcional. Para que un nuevo archivo se lista deberá ser cargado previamente.')];
+  String _comentario = '';
 
   //Usuario user;
   //_NuevaConsultaState(this.user);
@@ -37,7 +37,7 @@ class _NuevaInasistenciaState extends State<NuevaInasistencia> {
     //widget.user
     return Scaffold(
       appBar: AppBar(
-        title: Text("Nueva consulta"),
+        title: Text("Nueva Licencia"),
         //centerTitle: true,
         backgroundColor: Colors.purple,
         elevation: 0,
@@ -63,99 +63,10 @@ class _NuevaInasistenciaState extends State<NuevaInasistencia> {
 
   Widget _buildPanel() {
     return ExpansionPanelList(
-      expansionCallback: (int index, bool isExpanded) {
-        setState(() {
-          _data[index].isExpanded = !isExpanded;
-        });
-      },
-      children: _data.map<ExpansionPanel>((Item item) {
-        return ExpansionPanel(
-          headerBuilder: (BuildContext context, bool isExpanded) {
-            return ListTile(
-              title: Text(item.header,
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              subtitle: Text(item.description),
-            );
-          },
-          body: _contenido(item.index),
-          isExpanded: item.isExpanded,
-        );
-      }).toList(),
+      //children:
     );
   }
 
-  Widget _checkServicios() {
-    return ListView.builder(
-      physics: NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: widget.user.instituciones[0].servicios.length,
-      itemBuilder: (BuildContext context, int index) {
-        return ListTile(
-          //title: Text('Gujarat, India'),
-          title: Text(widget.user.instituciones[0].servicios[index].descripcion),
-          leading: Radio<Servicio>(
-            value: widget.user.instituciones[0].servicios[index],
-            groupValue: _selectService,
-            onChanged: (value) {
-              setState(() {
-                _selectService = value!;
-                //log('servicio seleccionado ${_selectService.id}');
-              });
-            },
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _checkSintomas() {
-    return Column(
-      children: [
-        ListView.builder(
-          physics: NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: 6,
-          itemBuilder: (BuildContext context, int index) {
-            return CheckboxListTile(
-              //title: Text('Gujarat, India'),
-              title: Text(widget.user.instituciones[0].sintomas[index].nombre),
-              value: widget.user.instituciones[0].sintomas[index].selected,
-              onChanged: (bool? value) {
-                setState(() {
-                  widget.user.instituciones[0].sintomas[index].selected = !widget.user.instituciones[0].sintomas[index].selected;
-                });
-              } ,
-            );
-          },
-        ),
-        _comentarioTextField(),
-      ],
-    );
-  }
-
-  Widget _checkEstudios() {
-    return ListView.builder(
-      physics: NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: widget.user.estudios.length,
-      itemBuilder: (BuildContext context, int index) {
-        return CheckboxListTile(
-          //title: Text('Gujarat, India'),
-          title: Text(widget.user.estudios[index].archivo),
-          value: widget.user.estudios[index].selected,
-          onChanged: (bool? value) {
-            setState(() {
-              widget.user.estudios[index].selected = !widget.user.estudios[index].selected;
-            });
-          } ,
-        );
-      },
-    );
-  }
 
   Widget _comentarioTextField() {
     return Container(
@@ -185,7 +96,7 @@ class _NuevaInasistenciaState extends State<NuevaInasistencia> {
         ),
       ),
       onPressed: () {
-        if(_selectService.id == 2000){
+        if(2000 == 2000){
           //log('no enviar post');
           _alertDialog('Debe seleccionar uno de los servicios listados en dicha sección.');
         }else{
@@ -200,28 +111,11 @@ class _NuevaInasistenciaState extends State<NuevaInasistencia> {
     );
   }
 
-  Widget _contenido(int index) {
-    switch (index) {
-      case 0:
-        return _checkSintomas();
-      case 1:
-        return _checkServicios();
-      case 2:
-        return _checkEstudios();
-      default:
-        return Text('Erro al intentar recuperar los datos',
-          style: TextStyle(
-            fontSize: 16.0,
-            fontWeight: FontWeight.bold,
-            color: Colors.red,
-          ),
-        );
-    }
-  }
+
 
   void _saveQuery() async {
-    ConsultaService consultaService = ConsultaService();
-    var data = await consultaService.createConsulta(widget.user.instituciones[0].sintomas,widget.user.instituciones[0].id,_comentario,widget.user.estudios,_selectService.id);
+    InasistenciaService inasistenciaService = InasistenciaService();
+    var data = await inasistenciaService.create(widget.user.instituciones[0].id,'','','');
     if(data['status'] == true) {
       Navigator.pop(context,'true');
     }else{
