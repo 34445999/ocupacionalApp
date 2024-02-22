@@ -7,7 +7,7 @@ import 'package:ocupacional/models/session_manager.dart';
 import 'package:http/http.dart' as http;
 
 class AuthService {
-  final baseUrl = 'https://simed.med.unne.edu.ar/api';
+  final baseUrl = 'http://181.15.198.183/api';
 
   Future<dynamic> register(String email, String password) async {
     try {
@@ -26,7 +26,7 @@ class AuthService {
   Future<int> authenticateUser(String email, String password) async {
     try {
       //var uri = Uri.http(baseUrl, '/login');
-      var url = Uri.parse('https://simed.med.unne.edu.ar/api/login');
+      var url = Uri.parse('http://181.15.198.183/api/login');
       var response = await http.post(url, body: {
         'email': email, 'password': password});
       //log('Response status: ${response.statusCode}');
@@ -53,7 +53,7 @@ class AuthService {
     errorJson['message'] = 'Error, comuniquese con el administrador.';
 
     try {
-      var url = Uri.parse('https://simed.med.unne.edu.ar/api/v2/check');
+      var url = Uri.parse('http://181.15.198.183/api/v2/check');
       String token = await SessionManager.getToken();
       //log('token del check: ${token}');
       String  token_firebase = await SessionManager.getOtherToken();

@@ -12,7 +12,7 @@ class InasistenciaService{
     final Map<String, dynamic> errorJson = new Map<String, dynamic>();
 
     try {
-      var url = Uri.parse('https://simed.med.unne.edu.ar/api/v2/consulta/store');
+      var url = Uri.parse('http://181.15.198.183/api/v2/consulta/store');
       String token = await SessionManager.getToken();
       var response = await http.post(url, headers: {HttpHeaders.authorizationHeader: 'Bearer '+ token,}, body: {
         'fecha' : fecha,
@@ -55,7 +55,7 @@ class InasistenciaService{
     final Map<String, dynamic> errorJson = new Map<String, dynamic>();
 
     try {
-      var url = Uri.parse('https://simed.med.unne.edu.ar/api/consulta/cancel');
+      var url = Uri.parse('http://181.15.198.183/api/consulta/cancel');
       String token = await SessionManager.getToken();
       var response = await http.post(url, headers: {HttpHeaders.authorizationHeader: 'Bearer '+ token,}, body: {
         'id' : inasistencia_id.toString()
@@ -96,7 +96,7 @@ class InasistenciaService{
     final Map<String, dynamic> errorJson = new Map<String, dynamic>();
 
     try {
-      var url = Uri.parse('https://simed.med.unne.edu.ar/api/conectar');
+      var url = Uri.parse('http://181.15.198.183/api/conectar');
       String token = await SessionManager.getToken();
       var response = await http.post(url, headers: {HttpHeaders.authorizationHeader: 'Bearer '+ token,}, body: {
         'consulta_id' : inasistencia_id.toString()
@@ -132,7 +132,7 @@ class InasistenciaService{
     final Map<String, dynamic> errorJson = new Map<String, dynamic>();
 
     try {
-      var url = Uri.parse('https://simed.med.unne.edu.ar/api/consultas/cerradas/list');
+      var url = Uri.parse('http://181.15.198.183/api/consultas/cerradas/list');
       String token = await SessionManager.getToken();
       var response = await http.post(url, headers: {HttpHeaders.authorizationHeader: 'Bearer '+ token,});
       switch (response.statusCode) {

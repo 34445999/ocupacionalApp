@@ -134,12 +134,32 @@ class _HomeState extends State<Home> {
         },
       ),
       bottomNavigationBar: Container(
-        padding: EdgeInsets.fromLTRB(40.0, 10.0, 30.0, 10.0),
+        padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
         //padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 100.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           //mainAxisSize: MainAxisSize.max,
           children: <Widget>[
+            ElevatedButton(
+                child: Text('SOLICITAR LICENCIA',
+                  style: TextStyle(
+                    fontSize: 23.0,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  elevation: 10.0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  primary: Colors.purple,
+                  padding: EdgeInsets.symmetric(horizontal: 60.0, vertical: 10.0),
+                ),
+                onPressed: () {
+                  _navigateNuevaInasistencia();
+                },
+            ),
+            /*
             IconButton(
                 iconSize: 40.0,
                 icon: const Icon(Icons.add_box_rounded),
@@ -147,7 +167,7 @@ class _HomeState extends State<Home> {
                 onPressed: () {
                   _navigateNuevaInasistencia();
                 }
-            ),
+            ),*/
           ],
         ),
       ),
