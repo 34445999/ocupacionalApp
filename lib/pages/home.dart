@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:ocupacional/models/inasistencia.dart';
@@ -40,7 +41,6 @@ class _HomeState extends State<Home> {
       consultas = [];
       var jsonUser = data['usuario'];
       var jsonUserInstitucion = jsonUser['users_instituciones'];
-      var jsonPaciente = jsonUser['paciente'];
       var jsonInasistencias = data['inasistencias'];
 
       List<Institucion> instituciones = [];
@@ -53,11 +53,13 @@ class _HomeState extends State<Home> {
 
       jsonInasistencias.forEach((data){
         Institucion objectInstitucion = instituciones.singleWhere((i) => (i.id == data['institucion_id']));
-        Inasistencia objectInasistencia = Inasistencia(data['id'], data['fecha'], data['ubicacion'], data['archivo'], data['estado'], objectInstitucion);
+        Inasistencia objectInasistencia = Inasistencia(data['id'], data['direccion'], data['horario'], data['ubicacion'], data['archivo'], data['estado'], 1, data['motivo'], objectInstitucion);
         setState(() {
           consultas.add(objectInasistencia);
         });
       });
+      //log("augusto ${objectUser.instituciones[0]}");
+      print(jsonEncode(objectUser.instituciones));
     }else{
       bool login = await SessionManager.getLogin();
       if(!login){
@@ -93,8 +95,9 @@ class _HomeState extends State<Home> {
                       //click en cada elemento
                     },
                     title: Text(consultas[index].institucion.nombre),
-                    subtitle: Text('Servicio: '+ 'var1'+'\n'+
-                        'var2'+'\n'+
+                    subtitle: Text('Fecha: '+ consultas[index].fecha+'\n'+
+                        'Días: '+ consultas[index].dias.toString()+'\n'+
+                        'Motivos: '+consultas[index].motivo+'\n'+
                         'Estado: '+consultas[index].estado
                     ),
                   ),
@@ -143,8 +146,9 @@ class _HomeState extends State<Home> {
             ElevatedButton(
                 child: Text('SOLICITAR LICENCIA',
                   style: TextStyle(
-                    fontSize: 23.0,
-                    fontWeight: FontWeight.normal,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
                 style: ElevatedButton.styleFrom(

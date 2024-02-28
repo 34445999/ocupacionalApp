@@ -36,7 +36,7 @@ class _LoginState extends State<Login> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Flexible(
-                  child: Image.asset('images/LinkMed.png',
+                  child: Image.asset('images/logoOcupacional.png',
                     height: 250.0,
                   ),
                 ),
